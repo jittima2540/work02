@@ -1,4 +1,4 @@
-<a ui-sref="gallory" class="button icon-left ion-chevron-left button-clear button-dark">Back</a>
+<a ui-sref="Home" class="button icon-left ion-chevron-left button-clear button-dark">Back</a>
   <div class="item item-avatar">
     <img src="img/11.jpg">
     <h2>History</h2>

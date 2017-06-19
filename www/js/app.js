@@ -17,68 +17,159 @@ angular.module('starter', ['ionic'])
       // a much nicer keyboard experience.
       cordova.plugins.Keyboard.disableScroll(true);
     }
+
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
   });
 })
-.config(function($stateProvider, $urlRouterProvider) {
-  $stateProvider
-    .state('index', {
-    url: '/index',
-    templateUrl: 'templates/menu.html',
-   controller: 'AppCtrl'
-  })
-	  .state('login', {
-    url: '/login',
-    templateUrl: 'templates/login.html',
-    controller: 'AppCtrl'
 
-  })
-	  .state('History', {
-    url: '/History',
-    templateUrl: 'templates/History.html',
-    //controller: 'AppCtrl'
-  })
-      .state('Home', {
-    url: '/Home',
-    templateUrl: 'templates/Home.html',
-    //controller: 'AppCtrl'
+.config(function($stateProvider, $urlRouterProvider){
+
+	$stateProvider
+		.state('index', {
+		url: '/index',
+        templateUrl: 'templates/manu.html',
+		//controller: 'AppCtrl'
+	})
+		.state('insert',{
+		url: '/insert',
+		templateUrl: 'templates/insert.html',
+	 controller: 'AdminCtrl'
+
+	})
+
+		.state('history', {
+		url: '/history',
+	    templateUrl: 'templates/history.html',
+		//controller: 'AppCtrl'
+	})
+
+		.state('home', {
+		url: '/home',
+	    templateUrl: 'templates/home.html',
+		//controller: 'AppCtrl'
+	})
+		.state('list', {
+		url: '/list',
+	    templateUrl: 'templates/list.html',
+		controller: 'PlaylistCtrl'
+	})
+
+		.state('gallory', {
+		url: '/gallory',
+	    templateUrl: 'templates/gallory.html',
+		controller: 'PlaylistCtrl'
+	})
+		.state('login', {
+		url: '/login',
+	    templateUrl: 'templates/login.html',
+		controller: 'AppCtrl'
+	})
+		.state('edit_admin', {
+		url: '/edit_admin',
+	    templateUrl: 'templates/edit_admin.html',
+		controller: 'EditAdminCtrl'
+	})
+
+	$urlRouterProvider.otherwise('/login');
 })
-	  .state('menu', {
-    url: '/menu',
-    templateUrl: 'templates/menu.html',
-    //controller: 'AppCtrl'
-  })
-  $urlRouterProvider.otherwise('/login');
+
+.controller('AppCtrl',function ($scope,$state,$ionicPopup,$http,$ionicHistory) {
+  var url="http://localhost/ionic_php/";
+  $scope.login={};
+
+ $scope.doLogin=function(){
+      var admin_user=$scope.login.username;
+      var admin_password=$scope.login.password;
+      console.log(admin_user);
+      if(admin_user && admin_password){
+          str=url+"login.php?username="+admin_user+"&password="+admin_password;
+          $http.get(str)
+            .success(function(response){
+
+                $scope.admin=response.records;
+                sessionStorage.setItem('loggedin_status',true);
+                sessionStorage.setItem('loggedin_id',$scope.admin.admin_id);
+                sessionStorage.setItem('loggedin_status',$scope.admin.admin_user);
+
+                $ionicHistory.nextViewOptions({
+                  disableAnimate:true,
+                  disableBack:true
+                })
+
+                $ionicPopup.alert({
+                  title:'ล็อกอิน',
+                  template:'ยินดีต้อนรับเข้าสู่ระบบ'
+                })
+
+                $state.go('gallory',{},{location:"replace",reload:true});
+            })
+            .error(function(){
+
+              $ionicPopup.alert({
+                title:'ล็อกอิน',
+                template:'ไม่สามารถล็อกอินได้ กรุณาตรวจสอบ'
+              })
+            });
+
+      }else{
+        $ionicPopup.alert({
+          title:'ล็อกอิน',
+          template:'กรุณากรอกข้อมูลให้ครบ'
+        })
+
+      }
+
+  }
 })
-.controller('AppCtrl',function ($scope,$state,$ionicPopup){
-
-	$scope.login={};
-	var user="admin";
-	var password="123456";
-	$scope.doLogin=function(){
-		console.log("alert");
-		console.log(password);
-		console.log($scope.login.username);
-		console.log($scope.login.password);
-		if ($scope.login.username == 'admin' && $scope.login.password == '123456') {
-		console.log('success');
-		$ionicPopup.alert({
-		 title: 'Login Success!',
-		 template: 'Welcome admin'
-	   });
-		$state.go('History')
-
-    }else{
-		console.log('invalid');
-		$ionicPopup.alert({
-		 title: 'Login Fail!',
-		 template: 'Invalid Username and Password '
-	   });
-		$state.go('login')
-    }
-	};
- 
+.controller('AdminCtrl',function($scope,$http){
+var url="http://localhost/ionic_php/";
+	$scope.Admindata=[];
+	 $scope.createAdmin=function(){
+      var admin_user=$scope.adminData.admin_user;
+      var admin_password=$scope.adminData.admin_password;
+      console.log(admin_user)
+	  str=url+"admin-insert.php?username="+admin_user+"&password="+admin_password;
+       $http.get(str)
+		.success(function(data){
+		if(data==true)
+		console.log("OK");
+	})
+		.error(function(data){
+		console.log("Erorr");
+	});
 	
+	
+	}
+})
+.controller('EditAdminCtrl',function($scope,$http){
+  var url="http://localhost/ionic_php/";
+$scope.EditAdminData=[];
+$scope.editadmin=function(){
+  var admin_id=$scope.EditAdminData.editadmin.id;
+  var admin_user=$scope.EditAdminData.editadmin.username;
+  var admin_password=$scope.EditAdminData.editadmin.password;
+  console.log(admin_user);
+str=url+"admin-edit.php?id="+admin_id+"&username="+ admin_user+"&password="+admin_password;
+$http.get(str)
+.success(function(data){
+  if(data == true){
+    console.log("OK");
+  }
+})
+.error(function(data){
+  console.log("Error");
+});
+}
+})
+.controller('PlaylistCtrl',function($scope){
+	$scope.datalist=[
+	{fname:"Nadear",lname:"Black",pic:"img/1.jpg"},
+	{fname:"Chelsae",lname:"cfc",pic:"img/2.jpg"},
+	{fname:"Chelsae",lname:"cfc",pic:"img/3.jpg"},
+	{fname:"Chelsae",lname:"cfc",pic:"img/4.jpg"},
+	{fname:"Chelsae",lname:"cfc",pic:"img/5.jpg"}
+
+];
 })
