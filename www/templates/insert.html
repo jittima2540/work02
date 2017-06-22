@@ -1,16 +1,25 @@
-<form ng-submit="doLogin()">
-  <div class="list">
-    <label class="item item-input">
-      <span class="input-label">Username</span>
-      <input type="text"  ng-model="loginData.username">
-    </label>
-    <label class="item item-input">
-      <span class="input-label">Password</span>
-      <input type="password"   ng-model="loginData.password">
+<div class="bar bar-header bar-positive">
+  <h1 class="title"> เพิ่มข้อมูล </h1>
+</div>
+<form ng-submit="createAdmin()">
+<div class="list has-subheader">
+  <label class="item item-input">
+    <span class="input-label">Username</span>
+    <input type="text" ng-model="adminData.admin_user">
+  </label>
+  <label class="item item-input">
+    <span class="input-label">Password</span>
+    <input type="password" ng-model="adminData.admin_password">
+  </label>
+  <center>
+<button class="button button=-clear button-positive " type="submit">>> เพิ่มข้อมูล << </center>
 
-    </label>
-    <label class="item ">
-      <button class="button button-block button-positive" type="submit">Login</button>
-    </label>
-  </div>
-</form>
+
+</div>
+</center>
+  </form>
+  
+
+<div class="bar bar-footer bar-balanced">
+  <div class="title">Footer</div>
+</div>

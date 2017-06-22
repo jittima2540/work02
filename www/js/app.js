@@ -71,6 +71,11 @@ angular.module('starter', ['ionic'])
 	    templateUrl: 'templates/edit_admin.html',
 		controller: 'EditAdminCtrl'
 	})
+		.state('del', {
+		url: '/del',
+	    templateUrl: 'templates/del.html',
+		controller: 'Ad_delCtrl'
+	})
 
 	$urlRouterProvider.otherwise('/login');
 })
@@ -139,8 +144,6 @@ var url="http://localhost/ionic_php/";
 		.error(function(data){
 		console.log("Erorr");
 	});
-	
-	
 	}
 })
 .controller('EditAdminCtrl',function($scope,$http){
@@ -158,6 +161,57 @@ $http.get(str)
     console.log("OK");
   }
 })
+.controller('Ad_delCtrl',function ($scope,$state,$ionicPopup,$http,$ionicHistory) {
+  var url="http://localhost/ionic_php/";
+  $scope.DelAdmin={};
+
+    $scope.delAdmin=function(){
+    var admin_id = $scope.delAdmindel.admin_id;
+ if( admin_id ){
+      str= url + "admin-del.php?id=" + admin_id ;
+
+      $http.get(str)
+      .success(function(response){
+
+        if(response==true){
+
+          $ionicPopup.alert({
+            title:'Deleted Completed',
+            template:' OK Delete'
+          });
+          $state.go('tab.admin',[],{location:"replace",reload:true});
+
+        }else{
+
+          $ionicPopup.alert({
+            title:'Can not delete data',
+            template:'NOT Delete'
+          });
+         $state.go('tab.admin-admin',[],{location:"replace",reload:true});
+
+        }
+
+      })
+		  .error(function(){
+
+        $ionicPopup.alert({
+          title:'ข้อมูลผู้ดูแลระบบ',
+          template:'ไม่สามารถทำการติดต่อเซิร์ฟเวอร์ได้'
+        });
+
+      })
+
+    }else{
+
+      $ionicPopup.alert({
+        title:'ข้อมูลผู้ดูแลระบบ',
+        template:'กรุณากรอกข้อมูลให้ครบ'
+      });
+
+    }
+
+  };
+  })
 .error(function(data){
   console.log("Error");
 });
